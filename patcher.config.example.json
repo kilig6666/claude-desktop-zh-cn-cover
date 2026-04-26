@@ -1,0 +1,10 @@
+{
+  "windows": {
+    "app_path": "C:\\Users\\<you>\\AppData\\Local\\Programs\\Claude",
+    "user_home": "C:\\Users\\<you>"
+  },
+  "macos": {
+    "app_path": "/Applications/Claude.app",
+    "user_home": "/Users/<you>"
+  }
+}
