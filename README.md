@@ -9,6 +9,23 @@
 
 脚本会给 Claude 添加 `中文（中国）` 语言选项，并安装中文界面资源。
 
+## Windows 30 秒快速开始
+
+如果你主要是给 Windows 版 Claude 汉化，直接按这个最短流程走：
+
+1. 安装 Python 3
+2. 退出 Claude Desktop
+3. 双击 `install_windows.bat`
+4. 如果脚本提示“找不到 Claude”，就打开它自动生成的 `patcher.config.json`
+5. 把里面的 `windows.app_path` 改成你的 Claude 安装目录
+6. 再双击 `install_windows.bat` 跑一次
+
+如果你喜欢 PowerShell，也可以直接执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install_windows.ps1
+```
+
 ## 功能特点
 
 - 自动给 Claude 前端语言白名单加入 `zh-CN`
@@ -30,6 +47,7 @@
 - `patch_claude_zh_cn.py`：真正执行补丁的跨平台 Python 脚本
 - `install.command`：macOS 双击运行入口
 - `install_windows.bat`：Windows 双击运行入口
+- `install_windows.ps1`：Windows PowerShell 运行入口
 - `patcher.config.example.json`：路径配置示例
 - `resources/frontend-zh-CN.json`：Claude 前端界面中文翻译
 - `resources/desktop-zh-CN.json`：Claude 桌面壳层中文翻译
@@ -74,7 +92,21 @@ sudo /usr/bin/python3 patch_claude_zh_cn.py --launch
 - 两者都找不到时，窗口会停住并提示你先安装 Python 3
 - `install_windows.bat` 默认会带上 `--launch`
 
-### 方式二：终端运行
+### 方式二：PowerShell 运行
+
+如果你更习惯 PowerShell，可以直接执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install_windows.ps1
+```
+
+说明：
+
+- `install_windows.ps1` 也会自动找 `py -3` / `python`
+- 默认也会带上 `--launch`
+- 如果你系统默认不允许直接运行 `.ps1`，用上面的 `ExecutionPolicy Bypass` 即可
+
+### 方式三：终端运行 Python 脚本
 
 在 `cmd` 或 PowerShell 中进入项目目录后执行：
 
@@ -97,7 +129,7 @@ python patch_claude_zh_cn.py --launch
    - `%LocalAppData%\Programs\Claude Desktop`
 2. 扫描常见程序目录中的 `Claude*`
 3. 读取 Windows 注册表中的安装位置
-4. 读取 `patcher.config.json`
+4. 自动生成或读取 `patcher.config.json`
 5. 使用命令行 `--app` 显式指定
 
 ## Windows 手动指定安装路径
@@ -128,9 +160,17 @@ install_windows.bat --app "C:\Users\you\AppData\Local\Programs\Claude"
 install_windows.bat --app "D:\Apps\Claude" --user-home "C:\Users\you"
 ```
 
+### 给 `install_windows.ps1` 透传参数
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install_windows.ps1 --app "D:\Apps\Claude" --user-home "C:\Users\you"
+```
+
 ## 使用配置文件指定路径
 
 如果你不想每次传 `--app`，可以在项目根目录新建 `patcher.config.json`。
+
+另外，**Windows 自动找不到 Claude 时，脚本现在会自动生成一个 `patcher.config.json` 模板**，你只要按提示改里面的 `windows.app_path` 再跑一次即可。
 
 ### macOS / Linux shell 复制示例文件
 
@@ -176,6 +216,7 @@ Copy-Item patcher.config.example.json patcher.config.json
 
 - 如果你的 Windows Claude 装在非默认盘符或自定义目录，优先配置 `patcher.config.json`
 - 如果你只临时跑一次，优先直接用 `--app`
+- 如果脚本自动生成了 `patcher.config.json`，优先先改这个文件，再重跑 `install_windows.bat` 或 `install_windows.ps1`
 
 ## 脚本会做什么
 
@@ -199,7 +240,7 @@ Copy-Item patcher.config.example.json patcher.config.json
 
 - 直接替换 Windows 安装目录中的 Claude 资源
 - 不做 macOS 的签名 / quarantine 处理
-- 可以通过 `install_windows.bat` 双击运行
+- 可以通过 `install_windows.bat` 或 `install_windows.ps1` 运行
 
 ## 备份与恢复
 
@@ -253,11 +294,37 @@ python --version
 
 优先按下面顺序处理：
 
-1. 先直接指定 `--app`
-2. 再考虑写 `patcher.config.json`
-3. 确认你传的是：
+1. 先看项目根目录里是否已经自动生成了 `patcher.config.json`
+2. 如果有，就把里面的 `windows.app_path` 改成你的真实安装目录
+3. 再重新运行：
+   - `install_windows.bat`
+   - 或 `powershell -ExecutionPolicy Bypass -File .\install_windows.ps1`
+4. 如果你不想改配置文件，就直接指定 `--app`
+5. 确认你传的是：
    - Claude 安装目录
    - 或 `Claude.exe`
+
+### 2.1 自动生成的 `patcher.config.json` 长什么样
+
+通常会类似：
+
+```json
+{
+  "windows": {
+    "app_path": "C:\\Users\\你的用户名\\AppData\\Local\\Programs\\Claude",
+    "user_home": "C:\\Users\\你的用户名"
+  },
+  "macos": {
+    "app_path": "/Applications/Claude.app",
+    "user_home": "/Users/<you>"
+  }
+}
+```
+
+你一般只需要改：
+
+- `windows.app_path`
+- 必要时改 `windows.user_home`
 
 ### 3. 补丁完成后还是英文
 

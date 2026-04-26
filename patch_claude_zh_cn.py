@@ -148,7 +148,10 @@ def ensure_patcher_config_template(user_home: Path) -> Path | None:
 
 
 def read_registry_string(key: Any, name: str) -> str:
-    import winreg
+    try:
+        import winreg
+    except ImportError:
+        return ""
 
     try:
         value, _ = winreg.QueryValueEx(key, name)
@@ -161,7 +164,10 @@ def find_windows_app_from_registry() -> Path | None:
     if not is_windows():
         return None
 
-    import winreg
+    try:
+        import winreg
+    except ImportError:
+        return None
 
     roots = [
         (winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Uninstall"),
