@@ -1,0 +1,9 @@
+./idea
+./claude
+
+# 自动生成的临时文件
+e-US.json
+untranslated_template.json
+*.backup-*.json
+__pycache__
+*.pyc
