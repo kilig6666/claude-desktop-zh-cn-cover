@@ -25,7 +25,6 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-
 LANG_CODE = "zh-CN"
 ROOT = Path(__file__).resolve().parent
 RESOURCES = ROOT / "resources"
@@ -118,7 +117,8 @@ def default_windows_user_home(user_home: Path) -> Path:
 
 
 def default_windows_app_path(user_home: Path) -> Path:
-    return Path(os.environ.get("LOCALAPPDATA") or (default_windows_user_home(user_home) / "AppData/Local")) / "Programs/Claude"
+    return Path(
+        os.environ.get("LOCALAPPDATA") or (default_windows_user_home(user_home) / "AppData/Local")) / "Programs/Claude"
 
 
 def build_config_template(user_home: Path) -> dict[str, Any]:
@@ -368,7 +368,7 @@ def patch_hardcoded_frontend_strings(app: Path) -> None:
     assets_dir = frontend_assets_dir(app)
     replacements = {
         '{title:"Egress Requirements",description:"Hosts your network firewall must allow, derived from your current settings. This list is read-only and updates as you make changes. Traffic is HTTPS on port 443 unless a custom port is specified (OTLP, gateway, or MCP server URLs).",derived:!0}': '{title:"出口要求",description:"此列表包含您的网络防火墙必须允许的主机，其值取决于您当前的设置。此列表为只读，会随着您的更改而更新。除非指定自定义端口（例如 OTLP、网关或 MCP 服务器 URL），否则流量将通过 443 端口上的 HTTPS 协议传输。",derived:!0}',
-        '{title:"Plugins & skills",banner:"Plugins and skills aren't set in this configuration. Mount plugin bundles to the folder below using your device-management tool and Cowork will load them at launch.",mountPath:{mac:"/Library/Application Support/Claude/org-plugins",win:"%ProgramFiles%\\Claude\\org-plugins",caption:"Drop plugin folders here. Read-only to the app."}': '{title:"插件和技能",banner:"此配置中未设置插件和技能。请使用设备管理工具将插件包挂载到以下文件夹，Cowork 将在启动时加载它们。",mountPath:{mac:"/Library/Application Support/Claude/org-plugins",win:"%ProgramFiles%\\Claude\\org-plugins",caption:"将插件文件夹拖放到此处。对应用程序只读。"}',
+        '{title:"Plugins & skills",banner:"Plugins and skills aren\'t set in this configuration. Mount plugin bundles to the folder below using your device-management tool and Cowork will load them at launch.",mountPath:{mac:"/Library/Application Support/Claude/org-plugins",win:"%ProgramFiles%\\Claude\\org-plugins",caption:"Drop plugin folders here. Read-only to the app."}': '{title:"插件和技能",banner:"此配置中未设置插件和技能。请使用设备管理工具将插件包挂载到以下文件夹，Cowork 将在启动时加载它们。",mountPath:{mac:"/Library/Application Support/Claude/org-plugins",win:"%ProgramFiles%\\Claude\\org-plugins",caption:"将插件文件夹拖放到此处。对应用程序只读。"}',
         '{title:"Usage limits"}': '{title:"使用限制"}',
         '{title:"Telemetry & updates",banner:"Prompts, completions, and your data are never sent to Anthropic — telemetry covers crash and usage signals only."}': '{title:"遥测和更新",banner:"提示、完成情况和您的数据永远不会发送给 Anthropic——遥测数据仅涵盖崩溃和使用情况信号。"}',
         '{title:"Connectors & extensions"}': '{title:"连接器和扩展"}',
@@ -608,9 +608,11 @@ def verify(app: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Patch Claude Desktop with zh-CN language resources.")
-    parser.add_argument("--app", type=Path, help="Path to Claude.app on macOS, or Claude install directory / Claude.exe on Windows")
+    parser.add_argument("--app", type=Path,
+                        help="Path to Claude.app on macOS, or Claude install directory / Claude.exe on Windows")
     parser.add_argument("--user-home", type=Path, help="Home directory whose Claude config should be updated")
-    parser.add_argument("--dry-run", action="store_true", help="Prepare and verify a patched temp app, but do not replace the installed Claude")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Prepare and verify a patched temp app, but do not replace the installed Claude")
     parser.add_argument("--launch", action="store_true", help="Launch Claude after installation")
     args = parser.parse_args()
 
